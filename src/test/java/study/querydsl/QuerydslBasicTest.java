@@ -656,4 +656,45 @@ public class QuerydslBasicTest {
                 .fetch();
     }
 
+    @Test
+    @Commit
+    public void bulkUpdate() {
+
+        //member1 = 10 -> 비회원
+        //member2 = 20 -> 비회원
+        //member3 = 30 -> 유지
+        //member4 = 40 -> 유지
+
+        long count = queryFactory
+                .update(member)
+                .set(member.username, "비회원")
+                .where(member.age.lt(28))
+                .execute();
+
+        em.flush();
+        em.clear();
+
+        //member1 = 10 -> 1 DB 비회원
+        //member2 = 20 -> 2 DB 비회원
+        //member3 = 30 -> 3 DB member3
+        //member4 = 40 -> 4 DB member4
+    }
+
+    @Test
+    public void bulkAdd() {
+        long count = queryFactory
+                .update(member)
+                .set(member.age, member.age.multiply(2))
+                .execute();
+    }
+
+    @Test
+    public void bulkDelete() {
+        queryFactory
+                .delete(member)
+                .where(member.age.gt(18))
+                .execute();
+    }
+
+
 }
